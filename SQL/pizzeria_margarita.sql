@@ -52,8 +52,8 @@ CREATE TABLE `producto`(
 );
 
 CREATE TABLE `combo`(
-    `id` INT NOT NULL PRIMARY KEY,
-    `nombre` VARCHAR(100) NOT NULL UNIQUE,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `nombre` VARCHAR(100) NOT NULL,
     `precio` DECIMAL(10, 2) NOT NULL 
 );
 
