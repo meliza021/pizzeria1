@@ -159,3 +159,58 @@ BEGIN
   END IF;
 END$$
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE FUNCTION fc_precio_final_pedido(p_pedido_id INT)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+  DECLARE v_total DECIMAL(10,2) DEFAULT 0;
+  DECLARE v_precio_unitario DECIMAL(10,2);
+  DECLARE v_cantidad INT;
+  DECLARE v_descuento DECIMAL(10,2);
+
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE cur CURSOR FOR
+    SELECT pp.precio, dp.cantidad
+    FROM detalle_pedido dp
+    JOIN detalle_pedido_producto dpp ON dp.id = dpp.detalle_id
+    JOIN producto_presentacion pp ON dpp.producto_id = pp.product_id
+    WHERE dp.pedido_id = p_pedido_id AND pp.presentacion_id = 1;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO v_precio_unitario, v_cantidad;
+    IF done THEN LEAVE read_loop; END IF;
+
+    SET v_descuento = fc_descuento_por_cantidad(v_cantidad, v_precio_unitario);
+    SET v_total = v_total + (v_precio_unitario * v_cantidad) - v_descuento;
+  END LOOP;
+
+  CLOSE cur;
+
+  RETURN v_total;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE FUNCTION fc_obtener_stock_ingrediente(p_ingrediente_id INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+  DECLARE v_stock INT;
+
+  SELECT stock INTO v_stock FROM ingrediente WHERE id = p_ingrediente_id;
+
+  RETURN v_stock;
+END$$
+DELIMITER ;
+
+
+
