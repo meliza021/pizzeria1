@@ -1,3 +1,4 @@
+-- Active: 1749179811997@@127.0.0.1@3306@taller_sql
 -- Eliminar base de datos si ya existe (opcional)
 DROP DATABASE IF EXISTS pizzas;
 
