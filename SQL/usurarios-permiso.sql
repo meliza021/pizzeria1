@@ -27,5 +27,14 @@ SHOW GRANTS FOR  'vendedor'@'localhost'
 
 
 SHOW TABLES;
-GRANT EXECUTE ON PROCEDURE pizza.ps_actualizar_precio_producto TO 'vendedor'@'vendedor'
-GRANT EXECUTE ON FUNCTION pizzas.fn_calcular_subtotal_pedido TO 'vendedor'@'vendedor'
+GRANT EXECUTE ON PROCEDURE pizza.ps_actualizar_precio_producto TO 'vendedor'@'vendedor';
+GRANT EXECUTE ON FUNCTION pizzas.fn_calcular_subtotal_pedido TO 'vendedor'@'vendedor';
+
+
+--como se quita un permiso}
+
+REVOKE SELECT ON  pizzas.* FROM 'vendedor'@'localhost'; --se quito el principal
+
+
+
+
