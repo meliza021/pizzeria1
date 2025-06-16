@@ -1,5 +1,8 @@
 -- Active: 1749179811997@@127.0.0.1@3306@taller_sql
 -- PROCEDIMIENTO: Insertar pizza con ingredientes
+
+
+
 DELIMITER $$
 CREATE PROCEDURE ps_add_pizza_con_ingredientes(
   IN p_nombre_pizza VARCHAR(100),

@@ -1,4 +1,4 @@
--- Active: 1749179811997@@127.0.0.1@3306@taller_sql
+-- Active: 1750072773908@@127.0.0.1@3307@mysql
 -- Eliminar base de datos si ya existe (opcional)
 DROP DATABASE IF EXISTS pizzas;
 
@@ -119,3 +119,11 @@ CREATE TABLE IF NOT EXISTS ingredientes_extra (
   FOREIGN KEY (detalle_id) REFERENCES detalle_pedido(id),
   FOREIGN KEY (ingrediente_id) REFERENCES ingrediente(id)
 );
+
+CREATE TABLE facturas (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       codigo_factura VARCHAR(20),
+       -- otros campos de la factura
+       fecha_emision DATE,
+       monto DECIMAL(10, 2)
+   );
