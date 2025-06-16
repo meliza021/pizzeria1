@@ -214,3 +214,61 @@ DELIMITER ;
 
 
 
+DELIMITER $$
+CREATE FUNCTION fc_es_pizza_popular(p_pizza_id INT)
+RETURNS TINYINT
+DETERMINISTIC
+BEGIN
+  DECLARE v_veces INT;
+
+  SELECT COUNT(*) INTO v_veces
+  FROM detalle_pedido_producto
+  WHERE producto_id = p_pizza_id;
+
+  RETURN IF(v_veces > 50, 1, 0);
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_before_insert_detalle_pedido
+BEFORE INSERT ON detalle_pedido
+FOR EACH ROW
+BEGIN
+  IF NEW.cantidad < 1 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La cantidad debe ser al menos 1';
+  END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER tg_after_insert_detalle_pedido_pizza
+AFTER INSERT ON detalle_pedido_producto
+FOR EACH ROW
+BEGIN
+  DECLARE ingr_id INT;
+  DECLARE cant INT;
+  DECLARE done INT DEFAULT 0;
+
+  DECLARE cur CURSOR FOR
+    SELECT ingrediente_id, cantidad
+    FROM ingredientes_extra
+    WHERE detalle_id = NEW.producto_id;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO ingr_id, cant;
+    IF done THEN LEAVE read_loop; END IF;
+
+    UPDATE ingrediente SET stock = stock - cant WHERE id = ingr_id;
+  END LOOP;
+
+  CLOSE cur;
+END$$
+DELIMITER ;
+
+
+UPDATE ingrediente SET stock = stock + cant WHERE id = ingr_id;
