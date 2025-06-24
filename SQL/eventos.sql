@@ -1,8 +1,9 @@
+-- Active: 1750791384046@@127.0.0.1@3307@pizzas
 
 
 SHOW EVENTS;
 
--- 1
+-- 1 actividad 
 DELIMITER $$
 
 DROP EVENT IF EXISTS ev_resumen_diario_unico;
@@ -33,7 +34,7 @@ END $$
 
 DELIMITER ;
 
--- 2
+-- 2 actividad
 DELIMITER $$
 
 DROP EVENT IF EXISTS ev_resumen_semanal $$
@@ -65,7 +66,7 @@ END $$
 
 DELIMITER ;
 
--- 3
+-- 3 actividad 
 DELIMITER $$
 
 DROP EVENT IF EXISTS ev_alerta_stock_unica $$
@@ -86,7 +87,7 @@ END $$
 
 DELIMITER ;
 
--- 4
+-- 4 actividad 
 DELIMITER $$
 
 DROP EVENT IF EXISTS ev_monitor_stock_bajo $$
@@ -107,7 +108,7 @@ END $$
 
 DELIMITER ;
 
--- 5
+-- 5 actividad 
 DELIMITER $$
 
 DROP EVENT IF EXISTS ev_purgar_resumen_antiguo $$

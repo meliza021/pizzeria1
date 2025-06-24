@@ -1,53 +1,4 @@
 
-
-SHOW TRIGGERS;
-
--- 1
-DELIMITER $$
-
-DROP TRIGGER IF EXISTS tg_validar_stock
-
-CREATE TRIGGER tg_validar_stock
-BEFORE INSERT ON detalle_pedido
-FOR EACH ROW
-BEGIN
-    DECLARE p_producto_id INT;
-    DECLARE p_tipo_producto_id INT;
-    DECLARE p_stock INT;
-
-    SELECT pro.id, pro.tipo_producto_id
-    INTO p_producto_id, p_tipo_producto_id
-    FROM producto_presentacion pro_pre
-    JOIN producto pro ON pro_pre.producto_id = pro.id
-    WHERE pro_pre.id = NEW.producto_presentacion_id;
-
-    IF p_tipo_producto_id = 2 THEN
-
-        SELECT MIN(stock) INTO p_stock FROM ingrediente ing
-        JOIN ingrediente_producto ing_pro ON ing.id = ing_pro.ingrediente_id
-        WHERE ing_pro.producto_id = p_producto_id;
-
-        IF p_stock < NEW.cantidad THEN
-            SIGNAL SQLSTATE '40001'
-                SET MESSAGE_TEXT = 'No hay suficiente stock para el producto seleccionado';
-        END IF;
-
-    END IF;
-
-
-END $$
-
-DELIMITER ;
-
-INSERT INTO detalle_pedido (cantidad, pedido_id, producto_presentacion_id, tipo_combo)
-VALUES(20, 1, 4, 'Producto individual');
-
-SELECT pro.id AS Producto, pro.tipo_producto_id AS Tipo_Producto
-    FROM producto_presentacion pro_pre
-    JOIN producto pro ON pro_pre.producto_id = pro.id
-    WHERE pro_pre.id = 4;
-
--- 2
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_descontar_stock_ingrediente_extra $$
@@ -69,7 +20,7 @@ VALUES(10, 1, 1);
 
 SELECT * FROM ingrediente;
 
--- 3
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_registro_actualizacion_precios $$
@@ -91,7 +42,7 @@ UPDATE producto_presentacion SET precio = 25000 WHERE id = 4;
 
 SELECT * FROM auditoria_precios;
 
--- 4
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_impedir_ciertos_precios $$
@@ -112,7 +63,7 @@ DELIMITER ;
 
 UPDATE producto_presentacion SET precio = 0 WHERE id = 1;
 
--- 5
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_generar_factura $$
@@ -140,7 +91,7 @@ VALUES('2025-03-11 06:00:00', 50000, 2, 1, 'Pendiente');
 
 SELECT * FROM factura;
 
--- 6
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_actualizar_estado_pedido $$
@@ -161,7 +112,7 @@ SELECT * FROM pedido;
 INSERT INTO factura (total, fecha, pedido_id, cliente_id)
 VALUES(35000, '2025-06-10 12:05:00', 1, 1);
 
--- 7
+
 DELIMITER $$
 
 DROP TRIGGER IF EXISTS tg_evitar_eliminacion_combos_usados $$
